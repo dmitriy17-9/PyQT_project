@@ -76,26 +76,21 @@ class MainWindow(QMainWindow):
         self.calc()
 
     def delete_row(self):
-        # Получаем список элементов без повторов и их id
         rows = list(set([i.row() for i in self.expenses.selectedItems()]))
         ids = [self.expenses.item(i, 0).text() for i in rows]
-        print(rows, ids)
-        # Спрашиваем у пользователя подтверждение на удаление элементов
+
         valid = QMessageBox.question(
             self, '', "Действительно удалить элементы с id " + ",".join(ids),
             QMessageBox.Yes, QMessageBox.No)
-        # Если пользователь ответил утвердительно, удаляем элементы.
+
         if valid == QMessageBox.Yes:
             db_delete_row(ids)
 
-        # обновляем tableWidget
         self.show_table()
         self.calc()
 
     def item_changed(self, item):
         self.modified["id"] = self.expenses.item(item.row(), 0).text()
-        # Если значение в ячейке было изменено,
-        # то в словарь записывается пара: название поля, новое значение
         self.modified[self.titles[item.column()]] = item.text()
         self.save_results()
         self.calc()
